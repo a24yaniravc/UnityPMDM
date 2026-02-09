@@ -10,21 +10,39 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] TMP_Text txtP1Score;
     [SerializeField] TMP_Text txtP2Score;
+    [SerializeField] TMP_Text txtHighScore;
+    int highScore;
 
     public void AddPointP1()
     {
         p1Score++;
         txtP1Score.text = p1Score.ToString();
+        CheckHighScore();
     }
     public void AddPointP2()
     {
         p2Score++;
         txtP2Score.text = p2Score.ToString();
+        CheckHighScore();
     }
 
     void Start()
     {
         Cursor.visible = false;
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        txtHighScore.text = highScore.ToString();
+    }
+
+    void CheckHighScore()
+    {
+        int currentScore = Mathf.Max(p1Score, p2Score);
+        if (currentScore > highScore)
+        {
+            highScore = currentScore;
+            txtHighScore.text = highScore.ToString();
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
+        }
     }
 
 
