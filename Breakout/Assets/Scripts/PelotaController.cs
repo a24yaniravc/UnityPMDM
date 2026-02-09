@@ -161,27 +161,39 @@ public class PelotaController : MonoBehaviour
     }
 
     public void DestroyBrick(GameObject obj)
-    {
-        sfx.clip = sfxBrick;
-        sfx.Play();
-        // Actualizamos la puntuación 
-        GameManager.UpdateScore(ladrillos[obj.tag]);
-        // Se destruye el objeto
-        Destroy(obj);
-        // Actualizamos el contador de ladrillos destruidos
-        ++brickCount;
-        // Comprobamos si hemos alcanzado el máximo de ladrillos. Necesitamos el índice de la escena en la que nos encontramos para saber cuántos ladrillos tenemos.
-        if (brickCount == GameManager.totalBricks[SceneManager.GetActiveScene().buildIndex])
-        {
-            // Cargamos la siguiente escena 
-            sfx.clip = sfxStart;
-            sfx.Play();
-            // Detenemos el movimiento de la pelota
-            rb.linearVelocity = Vector2.zero;
+{
+    // 1. Verificación de seguridad: si el tag ya no es de ladrillo, ignoramos
+    if (!ladrillos.ContainsKey(obj.tag)) return;
 
-            Invoke("NextScene", 3);
-        }
+    sfx.clip = sfxBrick;
+    sfx.Play();
+
+    // 2. Sumamos puntos usando el tag actual
+    GameManager.UpdateScore(ladrillos[obj.tag]);
+
+    // 3. ¡ESTA ES LA CLAVE!: Cambiamos el tag ANTES de destruir
+    // Al cambiarlo a "Untagged", si hay otra colisión en este frame,
+    // el 'if (ladrillos.ContainsKey(tag))' del OnCollision dará falso y no entrará aquí.
+    obj.tag = "Untagged"; 
+
+    // 4. Lo hacemos invisible e intangible inmediatamente
+    obj.SetActive(false); 
+    Destroy(obj);
+
+    // 5. Contamos el ladrillo
+    ++brickCount;
+    
+    int requiredBricks = GameManager.totalBricks[SceneManager.GetActiveScene().buildIndex];
+    Debug.Log($"Ladrillos: {brickCount} / Requeridos: {requiredBricks}");
+
+    if (brickCount >= requiredBricks && requiredBricks > 0) 
+    {
+        rb.linearVelocity = Vector2.zero;
+        sfx.clip = sfxStart;
+        sfx.Play();
+        Invoke("NextScene", 3);
     }
+}
 
     void NextScene()
     {

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static List<int> totalBricks = new List<int> { 0, 32, 32 };
+    public static List<int> totalBricks = new List<int> { 0, 32, 38 };
     public static int Score { get; private set; } = 0;
     public static int Lives { get; private set; } = 3;
 
