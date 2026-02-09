@@ -10,9 +10,14 @@ public class StartGame : MonoBehaviour
     [SerializeField] GameObject pelota; 
     [SerializeField] float duration; 
 
+
     void Update()
     {
-        if(Input.anyKeyDown){
+        if(Input.GetKeyDown(KeyCode.Space)){
+            // Ocultamos el cursor justo al presionar espacio
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
             StartCoroutine("StartNextLevel");
         }
     }
