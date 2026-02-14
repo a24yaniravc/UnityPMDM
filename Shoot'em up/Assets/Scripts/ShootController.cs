@@ -32,7 +32,9 @@ public class ShootController : MonoBehaviour
         if (other.gameObject.tag == "enemy")
         {
             Instantiate(hit, transform.position, Quaternion.identity);
-            Destroy(other.gameObject);
+            
+            // El enemigo explota y suma puntos
+            other.gameObject.SendMessage("DestroyEnemy", SendMessageOptions.DontRequireReceiver);
             Destroy(gameObject);
         }
     }

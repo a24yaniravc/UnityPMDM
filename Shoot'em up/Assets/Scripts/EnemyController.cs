@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] int scoreValue = 10; // Puntos que otorga esta nave
+
     // Velocidad de caída de la nave enemiga
     [SerializeField] float speed;
     [SerializeField] GameObject explosionPrefab; // Prefab de la explosión
@@ -35,6 +37,12 @@ public class EnemyController : MonoBehaviour
     // Destruir la nave enemiga y crear una explosión
     void DestroyEnemy()
     {
+        // Avisa al GameManager que sume puntos
+        if (GameManager.GetInstance() != null)
+        {
+            GameManager.GetInstance().AddScore(scoreValue);
+        }
+
         // Instanciar la animación de la explosión en la posición de la nave enemiga
         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         // Destruir la nave enemiga

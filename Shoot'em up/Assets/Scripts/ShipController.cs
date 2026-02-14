@@ -33,6 +33,10 @@ public class ShipController : MonoBehaviour
 
     IEnumerator StartPlayer()
     {
+        // Si no quedan vidas, no hacemos la rutina de reaparición
+        if (GameManager.GetInstance() != null && GameManager.GetInstance().IsGameOverCheck()) 
+            yield break;
+
         Material mat = GetComponent<SpriteRenderer>().material;
         Color color = mat.color;
 
@@ -103,19 +107,34 @@ public class ShipController : MonoBehaviour
     {
         if (other.gameObject.tag == "enemy" || other.gameObject.tag == "asteroide")
         {
+            if (other.gameObject.CompareTag("asteroide")) {
+                // Esto asegura que el asteroide ejecute su explosión antes de morir
+                other.gameObject.SendMessage("Explode", SendMessageOptions.DontRequireReceiver);
+            } else {
+                Destroy(other.gameObject);
+            }
+
             DestroyShip();
+        }        
+    }
+
+    void DestroyShip()
+    {
+        active = false;
+        
+        // Llamamos al GameManager para restar una vida
+        if (GameManager.GetInstance() != null)
+        {
+            GameManager.GetInstance().LoseLife();
         }
 
-        void DestroyShip()
-        {
-            // Desactivar comportamiento
-            active = false;
-            // Instanciar la animación de la explosión
+        if (explosion != null)
             Instantiate(explosion, transform.position, Quaternion.identity);
-            // Resetear posición de la nave
-            transform.position = initialPosition;
-            // Reiniciar la nave
-            StartCoroutine("StartPlayer");
-        }
+        
+        rb.linearVelocity = Vector2.zero; 
+        transform.position = initialPosition;
+        
+        // Solo reiniciamos la nave si nos quedan vidas (puedes añadir esta comprobación)
+        StartCoroutine("StartPlayer");
     }
 }

@@ -106,7 +106,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
   m_GravityScale: 0
@@ -171,6 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AsteroidsController
   minSpeedY: 1
   maxSpeedY: 2
-  minSpeedX: -1
-  maxSpeedX: 1
+  horizontalForce: 1.5
+  limitX: 5.5
+  destroyY: -7
+  scoreValue: 50
   explosionPrefab: {fileID: 3218154425958772449, guid: 206d4d4dd2fd94e28b36794281934d4d, type: 3}
